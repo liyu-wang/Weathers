@@ -19,6 +19,8 @@ class WeatherListViewController: UIViewController {
     var viewModel = WeatherListViewModel()
     let bag = DisposeBag()
     
+    var itemsDisposable: Disposable?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -62,20 +64,7 @@ extension WeatherListViewController {
 
 extension WeatherListViewController {
     func setupReactive() {
-        self.sortButton.rx.tap
-            .subscribe(onNext: { [weak self] w in
-                self?.showSortActionSheet()
-            })
-            .disposed(by: bag)
-        
-        self.viewModel.weathers
-            .bind(to: tableView.rx.items(cellIdentifier: "WeatherTableViewCell", cellType: WeatherTableViewCell.self)) { (row, weather, cell) in
-                cell.cityLabel.text = weather.cityName
-                cell.temperatureLabel.text = "\(weather.tempMin) - \(weather.tempMax)"
-                cell.humidityLabel.text = "\(weather.humidity)"
-                cell.conditionLabel.text = "\(weather.condition ?? "")"
-            }
-            .disposed(by: bag)
+        self.bindDataSource()
         
         self.tableView.rx.modelDeleted(Weather.self)
             .subscribe(onNext: { [weak self] w in
@@ -89,6 +78,25 @@ extension WeatherListViewController {
                 self?.navigationController?.pushViewController(detailsVC, animated: true)
             })
             .disposed(by: bag)
+        
+        self.sortButton.rx.tap
+            .subscribe(onNext: { [weak self] w in
+                self?.showSortActionSheet()
+            })
+            .disposed(by: bag)
+    }
+    
+    func bindDataSource() {
+        self.itemsDisposable?.dispose()
+        
+        self.itemsDisposable = self.viewModel.weathers
+            .bind(to: tableView.rx.items(cellIdentifier: "WeatherTableViewCell", cellType: WeatherTableViewCell.self)) { (row, weather, cell) in
+                cell.cityLabel.text = weather.cityName
+                cell.temperatureLabel.text = "\(weather.tempMin) - \(weather.tempMax)"
+                cell.humidityLabel.text = "\(weather.humidity)"
+                cell.conditionLabel.text = "\(weather.condition ?? "")"
+        }
+        self.itemsDisposable?.disposed(by: bag)
     }
 }
 
@@ -99,12 +107,15 @@ extension WeatherListViewController {
         let actionSheet = UIAlertController(title: "Sort by", message: nil, preferredStyle: .actionSheet)
         let nameAction = UIAlertAction(title: "Name", style: .default) { (action) in
             self.viewModel.orderBy(key: .name)
+            self.bindDataSource()
         }
         let maxTempAction = UIAlertAction(title: "Max Temperature", style: .default) { (action) in
             self.viewModel.orderBy(key: .tempMax)
+            self.bindDataSource()
         }
         let minTempAction = UIAlertAction(title: "Min Temperature", style: .default) { (action) in
             self.viewModel.orderBy(key: .tempMin)
+            self.bindDataSource()
         }
         actionSheet.addAction(nameAction)
         actionSheet.addAction(maxTempAction)
