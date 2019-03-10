@@ -12,7 +12,6 @@ import RealmSwift
 class Weather: Object {
     @objc dynamic var id: String = ""
     @objc dynamic var cityName: String = ""
-    @objc dynamic var temperature: Float = 0.0
     @objc dynamic var tempMin: Float = 0.0
     @objc dynamic var tempMax: Float = 0.0
     @objc dynamic var humidity: Int = 0

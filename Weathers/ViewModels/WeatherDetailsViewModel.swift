@@ -14,43 +14,51 @@ struct WeatherDetailsViewModel {
     let weatherDao: WeatherDao
     
     // Out binding
-    let weather: BehaviorRelay<Weather>
+    let weather: BehaviorRelay<Weather?>
     
     // In binding
     let cityName: BehaviorRelay<String>
-    let temperature: BehaviorRelay<Int>
-    let tempMin: BehaviorRelay<Int>
-    let tempMax: BehaviorRelay<Int>
-    let humidity: BehaviorRelay<Int>
+    let tempMin: BehaviorRelay<String>
+    let tempMax: BehaviorRelay<String>
+    let humidity: BehaviorRelay<String>
     let condition: BehaviorRelay<String>
     
     var isUpdate: Bool
     
-    init(with weather: Weather?, weatherDao: WeatherDao = WeatherDaoImpl()) {
+    init(with weather: Weather? = nil, weatherDao: WeatherDao = WeatherDaoImpl()) {
+        self.weather = BehaviorRelay(value: weather)
         self.weatherDao = weatherDao
-        
-        if let w = weather {
-            self.weather = BehaviorRelay(value: w)
-            self.isUpdate = true
-        } else {
-            let w = Weather()
-            self.weather = BehaviorRelay(value: w)
-            self.isUpdate = false
-        }
+        self.isUpdate = weather != nil
         
         self.cityName = BehaviorRelay(value: "")
-        self.temperature = BehaviorRelay(value: 0)
-        self.tempMin = BehaviorRelay(value: 0)
-        self.tempMax = BehaviorRelay(value: 0)
-        self.humidity = BehaviorRelay(value: 0)
+        self.tempMin = BehaviorRelay(value: "")
+        self.tempMax = BehaviorRelay(value: "")
+        self.humidity = BehaviorRelay(value: "")
         self.condition = BehaviorRelay(value: "")
     }
     
     func save() {
-        if self.isUpdate {
-            self.weatherDao.update(weather: self.weather.value)
+        let weather = Weather()
+        if let w = self.weather.value {
+            weather.id = w.id
         } else {
-            self.weatherDao.add(weather: self.weather.value)
+            weather.id = UUID().uuidString
         }
+        
+        weather.cityName = self.cityName.value
+        weather.tempMin = Float(self.tempMin.value)!
+        weather.tempMax = Float(self.tempMax.value)!
+        weather.humidity = Int(self.humidity.value)!
+        weather.condition = self.condition.value
+        
+        if isUpdate {
+            self.weatherDao.update(weather: weather)
+        } else {
+            self.weatherDao.add(weather: weather)
+        }
+    }
+    
+    func validateFields() {
+        
     }
 }
