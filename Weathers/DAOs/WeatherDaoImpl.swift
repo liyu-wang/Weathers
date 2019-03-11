@@ -7,19 +7,21 @@
 //
 
 import Foundation
+import RxSwift
 import RealmSwift
+import RxRealm
 
 struct WeatherDaoImpl: WeatherDao {
     
     let realm = try! Realm()
     
-    func fetchWeathers() -> Results<Weather> {
+    func fetchWeathers() -> Observable<[Weather]> {
         return fetchWeathers(orderedBy: "cityName")
     }
     
-    func fetchWeathers(orderedBy keyPath: String) -> Results<Weather> {
+    func fetchWeathers(orderedBy keyPath: String) -> Observable<[Weather]> {
         let result = realm.objects(Weather.self).sorted(byKeyPath: keyPath)
-        return result
+        return Observable.array(from: result)
     }
     
     func add(weather: Weather) {

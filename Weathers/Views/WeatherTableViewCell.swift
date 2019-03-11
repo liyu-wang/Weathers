@@ -26,12 +26,5 @@ class WeatherTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
-    func setModel(_ model: Any) {
-        if let w = model as? Weather {
-            self.cityLabel.text = w.cityName
-//            self.temperatureLabel.text = "\(w.tempMin) - \(w.tempMax)"
-//            self.humidityLabel.text = "\(w.humidity)"
-        }
-    }
+
 }

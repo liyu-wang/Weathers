@@ -7,11 +7,11 @@
 //
 
 import Foundation
-import RealmSwift
+import RxSwift
 
 protocol WeatherDao {
-    func fetchWeathers() -> Results<Weather>
-    func fetchWeathers(orderedBy keyPath: String) -> Results<Weather>
+    func fetchWeathers() -> Observable<[Weather]>
+    func fetchWeathers(orderedBy keyPath: String) -> Observable<[Weather]>
     
     func add(weather: Weather)
     func add(weathers: [Weather])

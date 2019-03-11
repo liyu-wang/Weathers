@@ -7,9 +7,8 @@
 //
 
 import Foundation
-import RealmSwift
 import RxSwift
-import RxRealm
+import RxCocoa
 
 struct WeatherListViewModel {
     public enum SortKey: String {
@@ -18,30 +17,32 @@ struct WeatherListViewModel {
         case tempMax = "tempMax"
     }
     
-    let weatherDao: WeatherDao
-    
     // Out
-    var result: Results<Weather>
-    var weathers: Observable<[Weather]>
+    let weathers: BehaviorRelay<[Weather]>
+    
+    private let bag = DisposeBag()
+    private let weatherDao: WeatherDao
+    
+    private var weathersObservable: Observable<[Weather]>
+    private var weathersDisposable: Disposable?
     
     init(weatherDao: WeatherDao = WeatherDaoImpl()) {
+        self.weathers = BehaviorRelay(value: [])
         self.weatherDao = weatherDao
         
-        self.result = self.weatherDao.fetchWeathers()
-        self.weathers = Observable.array(from: self.result)
+        self.weathersObservable = self.weatherDao.fetchWeathers()
+        self.weathersDisposable = self.weathersObservable.bind(to: self.weathers)
+        self.weathersDisposable?.disposed(by: bag)
     }
-    
-//    func deleteWeather(at index: Int) {
-//        let weather = result[index]
-//        self.weatherDao.delete(weather: weather)
-//    }
     
     func delete(weather: Weather) {
         self.weatherDao.delete(weather: weather)
     }
     
     mutating func orderBy(key: SortKey) {
-        self.result = self.result.sorted(byKeyPath: key.rawValue)
-        self.weathers = Observable.array(from: self.result)
+        self.weathersDisposable?.dispose()
+        self.weathersObservable = self.weatherDao.fetchWeathers(orderedBy: key.rawValue)
+        self.weathersDisposable = self.weathersObservable.bind(to: self.weathers)
+        self.weathersDisposable?.disposed(by: bag)
     }
 }
