@@ -1,4 +1,5 @@
 PODS:
+  - ActionSheetPicker-3.0 (2.3.0)
   - Realm (3.13.1):
     - Realm/Headers (= 3.13.1)
   - Realm/Headers (3.13.1)
@@ -14,6 +15,7 @@ PODS:
     - RxAtomic (~> 4.4)
 
 DEPENDENCIES:
+  - ActionSheetPicker-3.0 (~> 2.3.0)
   - RealmSwift (~> 3.11)
   - RxCocoa (~> 4.0)
   - RxRealm
@@ -21,6 +23,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - ActionSheetPicker-3.0
     - Realm
     - RealmSwift
     - RxAtomic
@@ -29,6 +32,7 @@ SPEC REPOS:
     - RxSwift
 
 SPEC CHECKSUMS:
+  ActionSheetPicker-3.0: eef157d75e151f255c5333d26656c7fbfe905a51
   Realm: 50071da38fe079e0735e47c9f2eae738c68c5996
   RealmSwift: 8a1e6a02b7a08cd17a31e3115143fb69fe5f3fb9
   RxAtomic: eacf60db868c96bfd63320e28619fe29c179656f
@@ -36,6 +40,6 @@ SPEC CHECKSUMS:
   RxRealm: 5379eddd74f8d617ca7681d1f8d144af25b432b0
   RxSwift: 5976ecd04fc2fefd648827c23de5e11157faa973
 
-PODFILE CHECKSUM: cbbcffbb814e09e9588f55597eec17f522d0755c
+PODFILE CHECKSUM: fbd3828e6168fb0e9be4ff7c6aef217a9cdbde8e
 
 COCOAPODS: 1.6.0

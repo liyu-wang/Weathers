@@ -15,7 +15,7 @@ class Weather: Object {
     @objc dynamic var tempMin: Float = 0.0
     @objc dynamic var tempMax: Float = 0.0
     @objc dynamic var humidity: Int = 0
-    @objc dynamic var condition: String? = nil
+    @objc dynamic var condition: String = ""
     
     override static func primaryKey() -> String? {
         return "id"

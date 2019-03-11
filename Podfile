@@ -11,6 +11,8 @@ target 'Weathers' do
   pod 'RxSwift',    '~> 4.0'
   pod 'RxCocoa',    '~> 4.0'
   pod 'RxRealm'
+  
+  pod 'ActionSheetPicker-3.0', '~> 2.3.0'
 
   target 'WeathersTests' do
     inherit! :search_paths

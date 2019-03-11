@@ -10,7 +10,35 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+enum WeatherCondition: String {
+    case cloudy = "Cloudy"
+    case snow = "Snow"
+    case sunny = "Sunny"
+    case rainy = "Rainy"
+    case windy = "Windy"
+    
+    
+    var iconName: String {
+        switch self {
+        case .cloudy:
+            return "cloudy"
+        case .snow:
+            return "snow"
+        case .sunny:
+            return "sunny"
+        case .rainy:
+            return "rainy"
+        case .windy:
+            return "windy"
+        }
+    }
+}
+
+
+
 struct WeatherDetailsViewModel {
+    static let conditions: [WeatherCondition] = [.cloudy, .snow, .sunny, .rainy, .windy]
+    
     let weatherDao: WeatherDao
     
     // Out binding
@@ -28,13 +56,18 @@ struct WeatherDetailsViewModel {
     init(with weather: Weather? = nil, weatherDao: WeatherDao = WeatherDaoImpl()) {
         self.weather = BehaviorRelay(value: weather)
         self.weatherDao = weatherDao
-        self.isUpdate = weather != nil
         
         self.cityName = BehaviorRelay(value: "")
         self.tempMin = BehaviorRelay(value: "")
         self.tempMax = BehaviorRelay(value: "")
         self.humidity = BehaviorRelay(value: "")
-        self.condition = BehaviorRelay(value: "")
+        if let w = weather {
+            self.condition = BehaviorRelay(value: w.condition)
+            self.isUpdate = true
+        } else {
+            self.condition = BehaviorRelay(value: "n/a")
+            self.isUpdate = false
+        }
     }
     
     func save() {

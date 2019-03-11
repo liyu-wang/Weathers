@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import ActionSheetPicker_3_0
 
 class WeatherDetailsTableViewController: UITableViewController {
 
@@ -18,7 +19,7 @@ class WeatherDetailsTableViewController: UITableViewController {
     @IBOutlet weak var minTempField: UITextField!
     @IBOutlet weak var maxTempField: UITextField!
     @IBOutlet weak var humidityField: UITextField!
-    @IBOutlet weak var conditionField: UITextField!
+    @IBOutlet weak var conditionLabel: UILabel!
     
     let disposeBag = DisposeBag()
     
@@ -33,8 +34,6 @@ class WeatherDetailsTableViewController: UITableViewController {
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
         self.configViews()
         self.setupReactive()
     }
@@ -50,21 +49,38 @@ extension WeatherDetailsTableViewController {
     }
 }
 
-// MARK: - UI configs
+// MARK: - UI
 
 extension WeatherDetailsTableViewController {
     func configViews() {
-        self.tableView.allowsSelection = false
-        
-        configPickerViews()
-    }
-    
-    func configPickerViews() {
         
     }
     
     func configsTextFields() {
 //        self.minTempField.inputView
+    }
+    
+    func showWeatherConditionPicker(sender: Any) {
+        let rows = WeatherDetailsViewModel.conditions.map{ $0.rawValue }
+        ActionSheetStringPicker.show(withTitle: "Weather Condition", rows: rows,
+                                     initialSelection: 0,
+                                     doneBlock: { (picker, index, value) in
+                                        if let text = value as? String {
+                                            self.conditionLabel.text = text
+                                            self.viewModel.condition.accept(text)
+                                        }
+                                        self.deselectSelectedCell()
+                                     },
+                                     cancel: { picker in
+                                        self.deselectSelectedCell()
+                                     },
+                                     origin: sender)
+    }
+    
+    func deselectSelectedCell() {
+        if let cells = self.tableView.indexPathsForSelectedRows {
+            self.tableView.deselectRow(at: cells.first!, animated: true)
+        }
     }
 }
 
@@ -82,7 +98,7 @@ extension WeatherDetailsTableViewController {
                 self.minTempField.text = "\(w.tempMin)"
                 self.maxTempField.text = "\(w.tempMax)"
                 self.humidityField.text = "\(w.humidity)"
-                self.conditionField.text = w.condition
+                self.conditionLabel.text = w.condition
             })
             .disposed(by: disposeBag)
         
@@ -109,8 +125,7 @@ extension WeatherDetailsTableViewController {
             .bind(to: self.viewModel.humidity)
             .disposed(by: disposeBag)
         
-        self.conditionField.rx.text.orEmpty
-            .bind(to: self.viewModel.condition)
+        self.viewModel.condition.bind(to: self.conditionLabel.rx.text)
             .disposed(by: disposeBag)
     }
 }
@@ -120,5 +135,16 @@ extension WeatherDetailsTableViewController {
 extension WeatherDetailsTableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 5
+    }
+}
+
+// MARK: - Table view Delegate
+
+extension WeatherDetailsTableViewController {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if (indexPath.row == 4) {
+            let cell = tableView.cellForRow(at: indexPath)
+            self.showWeatherConditionPicker(sender: cell!)
+        }
     }
 }
