@@ -56,8 +56,24 @@ extension WeatherDetailsTableViewController {
         
     }
     
-    func configsTextFields() {
-//        self.minTempField.inputView
+    func showValidationErrors(_ errors: [ValidationError]) {
+        var msgs: [String] = []
+        for err in errors {
+            switch err {
+            case .emptyFields(let m):
+                msgs.append(m)
+            case .invalidMinTemperature(let m):
+                msgs.append(m)
+            case .invalidMaxTemperature(let m):
+                msgs.append(m)
+            case .invalidHumidity(let m):
+                msgs.append(m)
+            }
+        }
+        let msg = msgs.joined(separator: "\n")
+        let alert = UIAlertController(title: "Validation Errors", message: msg, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "ok", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     func showWeatherConditionPicker(sender: Any) {
@@ -126,6 +142,13 @@ extension WeatherDetailsTableViewController {
             .disposed(by: disposeBag)
         
         self.viewModel.condition.bind(to: self.conditionLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        self.viewModel.validationErrors
+            .filter { !$0.isEmpty }
+            .subscribe(onNext: { [weak self] errs in
+                self?.showValidationErrors(errs)
+            })
             .disposed(by: disposeBag)
     }
 }

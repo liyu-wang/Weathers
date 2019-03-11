@@ -136,7 +136,7 @@
                                                     <rect key="frame" x="88" y="15" width="270" height="30"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" autocorrectionType="no"/>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no"/>
                                                 </textField>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="city" translatesAutoresizingMaskIntoConstraints="NO" id="Xkt-V9-upx">
                                                     <rect key="frame" x="16" y="6" width="48" height="48"/>
@@ -166,7 +166,7 @@
                                                     <rect key="frame" x="89" y="15" width="270" height="30"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
                                                 </textField>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="temperature_low" translatesAutoresizingMaskIntoConstraints="NO" id="bDs-WC-ihK">
                                                     <rect key="frame" x="16" y="6" width="48" height="48"/>
@@ -196,7 +196,7 @@
                                                     <rect key="frame" x="89" y="15" width="269" height="30"/>
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                                                    <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
                                                 </textField>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="temperature_high" translatesAutoresizingMaskIntoConstraints="NO" id="cyv-Xr-hQY">
                                                     <rect key="frame" x="16" y="6" width="48" height="48"/>
