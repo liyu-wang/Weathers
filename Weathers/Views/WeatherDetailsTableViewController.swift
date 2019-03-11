@@ -53,7 +53,9 @@ extension WeatherDetailsTableViewController {
 
 extension WeatherDetailsTableViewController {
     func configViews() {
-        
+        self.minTempField.delegate = self
+        self.maxTempField.delegate = self
+        self.humidityField.delegate = self
     }
     
     func showValidationErrors(_ errors: [ValidationError]) {
@@ -169,5 +171,20 @@ extension WeatherDetailsTableViewController {
             let cell = tableView.cellForRow(at: indexPath)
             self.showWeatherConditionPicker(sender: cell!)
         }
+    }
+}
+
+// MARK: - UITextField Delegate
+
+extension WeatherDetailsTableViewController: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let rexp = textField == self.humidityField ? "^0$|^[1-9]?[0-9]?$|^100$" : "^(\\-)?[0-9]{0,2}((\\.)[0-9]{0,1})?$"
+        
+        let text = (textField.text ?? "") as NSString
+        let newText = text.replacingCharacters(in: range, with: string)
+        if let regex = try? NSRegularExpression(pattern: rexp, options: .caseInsensitive) {
+            return regex.numberOfMatches(in: newText, options: .reportProgress, range: NSRange(location: 0, length: (newText as NSString).length)) > 0
+        }
+        return false
     }
 }

@@ -92,7 +92,7 @@ extension WeatherListViewController {
         self.itemsDisposable = self.viewModel.weathers
             .bind(to: tableView.rx.items(cellIdentifier: "WeatherTableViewCell", cellType: WeatherTableViewCell.self)) { (row, weather, cell) in
                 cell.cityLabel.text = weather.cityName
-                cell.temperatureLabel.text = "\(weather.tempMin)°C - \(weather.tempMax)°C"
+                cell.temperatureLabel.text = "\(weather.tempMin)°C to \(weather.tempMax)°C"
                 cell.humidityLabel.text = "Humidity: \(weather.humidity)%"
                 cell.conditionLabel.text = "\(weather.condition)"
                 cell.conditionImageView.image = UIImage(named: WeatherCondition(rawValue: weather.condition)!.iconName)
