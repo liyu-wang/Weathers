@@ -46,8 +46,6 @@ fileprivate let notAvailableStr = "n/a"
 struct WeatherDetailsViewModel {
     static let conditions: [WeatherCondition] = [.cloudy, .snow, .sunny, .rainy, .windy]
     
-    let weatherDao: WeatherDao
-    
     // Out binding
     let weather: BehaviorRelay<Weather?>
     let validationErrors = BehaviorRelay<[ValidationError]>(value: [])
@@ -59,7 +57,8 @@ struct WeatherDetailsViewModel {
     let humidity: BehaviorRelay<String>
     let condition: BehaviorRelay<String>
     
-    var isUpdate: Bool
+    private let weatherDao: WeatherDao
+    private var isUpdate: Bool
     
     init(with weather: Weather? = nil, weatherDao: WeatherDao = WeatherDaoImpl()) {
         self.weather = BehaviorRelay(value: weather)
