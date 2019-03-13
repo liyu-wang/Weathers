@@ -16,9 +16,9 @@ class WeatherListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
-    let bag = DisposeBag()
+    private let bag = DisposeBag()
     
-    var viewModel = WeatherListViewModel()
+    private var viewModel = WeatherListViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,7 +50,7 @@ class WeatherListViewController: UIViewController {
 // MARK: - UI Config
 
 extension WeatherListViewController {
-    func configViews() {
+    private func configViews() {
         
         self.tableView.rx.setDelegate(self).disposed(by: bag)
         
@@ -62,7 +62,7 @@ extension WeatherListViewController {
 // MARK: - RX
 
 extension WeatherListViewController {
-    func setupReactive() {
+    private func setupReactive() {
         self.viewModel.weathers
             .bind(to: tableView.rx.items(cellIdentifier: "WeatherTableViewCell", cellType: WeatherTableViewCell.self)) { (row, weather, cell) in
                 cell.cityLabel.text = weather.cityName
@@ -97,7 +97,7 @@ extension WeatherListViewController {
 // MARK: - UI
 
 extension WeatherListViewController {
-    func showSortActionSheet() {
+    private func showSortActionSheet() {
         let actionSheet = UIAlertController(title: "Sort by", message: nil, preferredStyle: .actionSheet)
         let nameAction = UIAlertAction(title: "Name", style: .default) { (action) in
             self.viewModel.orderBy(key: .name)
@@ -121,14 +121,5 @@ extension WeatherListViewController {
 // MARK: - UITableViewDelegate
 
 extension WeatherListViewController: UITableViewDelegate {
-/*
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let delete = UITableViewRowAction(style: .destructive, title: "Delete") { (action, indexPath) in
-            // delete item at indexPath
-            self.viewModel.deleteWeather(at: indexPath.row)
-        }
-        return [delete]
-    }
- */
-}
 
+}

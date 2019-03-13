@@ -21,12 +21,9 @@ class WeatherDetailsTableViewController: UITableViewController {
     @IBOutlet weak var humidityField: UITextField!
     @IBOutlet weak var conditionLabel: UILabel!
     
-    let disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
-    var viewModel = WeatherDetailsViewModel()
-    
-    var temperaturePickerView: UIPickerView!
-    var humidityPickerView: UIPickerView!
+    private var viewModel = WeatherDetailsViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,13 +49,13 @@ extension WeatherDetailsTableViewController {
 // MARK: - UI
 
 extension WeatherDetailsTableViewController {
-    func configViews() {
+    private func configViews() {
         self.minTempField.delegate = self
         self.maxTempField.delegate = self
         self.humidityField.delegate = self
     }
     
-    func showValidationErrors(_ errors: [ValidationError]) {
+    private func showValidationErrors(_ errors: [ValidationError]) {
         var msgs: [String] = []
         for err in errors {
             switch err {
@@ -78,7 +75,7 @@ extension WeatherDetailsTableViewController {
         self.present(alert, animated: true, completion: nil)
     }
     
-    func showWeatherConditionPicker(sender: Any) {
+    private func showWeatherConditionPicker(sender: Any) {
         let rows = WeatherDetailsViewModel.conditions.map{ $0.rawValue }
         ActionSheetStringPicker.show(withTitle: "Weather Condition", rows: rows,
                                      initialSelection: 0,
@@ -95,7 +92,7 @@ extension WeatherDetailsTableViewController {
                                      origin: sender)
     }
     
-    func deselectSelectedCell() {
+    private func deselectSelectedCell() {
         if let cells = self.tableView.indexPathsForSelectedRows {
             self.tableView.deselectRow(at: cells.first!, animated: true)
         }
@@ -105,7 +102,7 @@ extension WeatherDetailsTableViewController {
 // MARK: - RX
 
 extension WeatherDetailsTableViewController {
-    func setupReactive() {
+    private func setupReactive() {
         self.viewModel.weather
             .asDriver()
             .drive(onNext: { weather in
