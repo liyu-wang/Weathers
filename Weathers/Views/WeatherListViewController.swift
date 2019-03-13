@@ -111,6 +111,9 @@ extension WeatherListViewController {
         actionSheet.addAction(nameAction)
         actionSheet.addAction(maxTempAction)
         actionSheet.addAction(minTempAction)
+        
+        actionSheet.popoverPresentationController?.barButtonItem = self.sortButton
+        
         self.present(actionSheet, animated: true, completion: nil)
     }
 }
