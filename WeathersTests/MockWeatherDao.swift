@@ -9,17 +9,27 @@
 import Foundation
 @testable import Weathers
 import RxSwift
+import RxCocoa
 
 class MockWeatherDao: WeatherDao {
     
-    var weathers: [Weather] = []
+    private var weatherArray: [Weather] = []
+    private var weathers: BehaviorRelay<[Weather]>
+    
+    init() {
+        self.weathers = BehaviorRelay(value: weatherArray)
+    }
     
     func fetchWeathers() -> Observable<[Weather]> {
-        return Observable.from(optional: weathers)
+        defer {
+            self.weathers.accept(self.weatherArray)
+        }
+        
+        return self.weathers.asObservable()
     }
     
     func fetchWeathers(orderedBy keyPath: String) -> Observable<[Weather]> {
-        let sorted = self.weathers.sorted { (w1, w2) -> Bool in
+        let sorted = self.weatherArray.sorted { (w1, w2) -> Bool in
             switch keyPath {
             case "cityName":
                 return w1.cityName < w2.cityName
@@ -32,38 +42,50 @@ class MockWeatherDao: WeatherDao {
             }
         }
         
-        return Observable.from(optional: sorted)
+        defer {
+            self.weatherArray = sorted
+            self.weathers.accept(self.weatherArray)
+        }
+        
+        return self.weathers.asObservable()
     }
     
     func add(weather: Weather) {
-        self.weathers.append(weather)
+        self.weatherArray.append(weather)
+        self.weathers.accept(self.weatherArray)
     }
     
     func add(weathers: [Weather]) {
-        self.weathers.append(contentsOf: weathers)
+        self.weatherArray.append(contentsOf: weathers)
+        self.weathers.accept(self.weatherArray)
     }
     
     func update(weather: Weather) {
-        for w in self.weathers {
+        for w in self.weatherArray {
             if w.id == weather.id {
                 w.cityName = weather.cityName
                 w.tempMin = weather.tempMin
                 w.tempMax = weather.tempMax
                 w.humidity = weather.humidity
                 w.condition = weather.condition
+                
+                self.weathers.accept(self.weatherArray)
+                
                 return
             }
         }
     }
     
     func delete(weather: Weather) {
-        if let index = self.weathers.index(of: weather) {
-            self.weathers.remove(at: index)
+        if let index = self.weatherArray.index(of: weather) {
+            self.weatherArray.remove(at: index)
+            self.weathers.accept(self.weatherArray)
         }
     }
     
     func deleteAll() {
-        self.weathers.removeAll()
+        self.weatherArray.removeAll()
+        self.weathers.accept(self.weatherArray)
     }
     
 }

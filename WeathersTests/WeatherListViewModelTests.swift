@@ -15,6 +15,8 @@ class WeatherListViewModelTests: XCTestCase {
     var weatherDao: WeatherDao!
     var viewModel: WeatherListViewModel!
     
+    var disposable: Disposable!
+    
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         self.weatherDao = MockWeatherDao()
@@ -26,13 +28,15 @@ class WeatherListViewModelTests: XCTestCase {
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        self.disposable?.dispose() // or call self.viewModel = nil before self.weatherDao.deleteAll()
+        
         self.weatherDao.deleteAll()
         self.weatherDao = nil
         self.viewModel = nil
     }
 
     func testFetchWeathers() {
-        _ = self.viewModel.weathers.subscribe(onNext: { (weathers) in
+        self.disposable = self.viewModel.weathers.subscribe(onNext: { (weathers) in
             XCTAssertEqual(weathers.count, 3, "Expected 3 weathers from data source.")
         })
     }
@@ -44,15 +48,15 @@ class WeatherListViewModelTests: XCTestCase {
             XCTAssert(false, "Can't get any weather from the data source.")
         }
         
-        _ = self.viewModel.weathers.skip(1).subscribe(onNext: { (weathers) in
-            XCTAssertEqual(self.viewModel.weathers.value.count, 2, "Expected 3 weathers from data source after deletion.")
+        self.disposable = self.viewModel.weathers.subscribe(onNext: { (weathers) in
+            XCTAssertEqual(weathers.count, 2, "Expected 2 weathers from data source after deletion.")
         })
     }
     
     func testOrderbyMaxTemperature() {
         self.viewModel.orderBy(key: .tempMax)
         
-        _ = self.viewModel.weathers.skip(1).subscribe(onNext: { (weathers) in
+        self.disposable = self.viewModel.weathers.subscribe(onNext: { (weathers) in
             XCTAssertLessThanOrEqual(weathers[0].tempMax, weathers[1].tempMax)
             XCTAssertLessThanOrEqual(weathers[1].tempMax, weathers[2].tempMax)
         })

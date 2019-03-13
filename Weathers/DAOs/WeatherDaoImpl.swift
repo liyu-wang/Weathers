@@ -13,7 +13,7 @@ import RxRealm
 
 struct WeatherDaoImpl: WeatherDao {
     
-    let realm = try! Realm()
+    private let realm = try! Realm()
     
     func fetchWeathers() -> Observable<[Weather]> {
         return fetchWeathers(orderedBy: "cityName")
