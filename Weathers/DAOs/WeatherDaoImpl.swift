@@ -13,45 +13,46 @@ import RxRealm
 
 struct WeatherDaoImpl: WeatherDao {
     
-    private let realm = try! Realm()
-    
     func fetchWeathers() -> Observable<[Weather]> {
         return fetchWeathers(orderedBy: "cityName")
     }
     
     func fetchWeathers(orderedBy keyPath: String) -> Observable<[Weather]> {
+        guard let realm = RealmManager.realm else { return Observable.just([]) }
+        
         let result = realm.objects(Weather.self).sorted(byKeyPath: keyPath)
         return Observable.array(from: result)
     }
     
     func add(weather: Weather) {
-        try! realm.write {
+        RealmManager.write { realm in
             realm.add(weather)
         }
     }
     
     func add(weathers: [Weather]) {
-        try! realm.write {
+        RealmManager.write { realm in
             realm.add(weathers)
         }
     }
     
     func update(weather: Weather) {
-        try! realm.write {
+        RealmManager.write { realm in
             realm.add(weather, update: true)
         }
     }
     
     func delete(weather: Weather) {
-        try! realm.write {
+        RealmManager.write { realm in
             realm.delete(weather)
         }
     }
     
     func deleteAll() {
+        guard let realm = RealmManager.realm else { return }
         let weathers: Results<Weather> = realm.objects(Weather.self)
         
-        try! realm.write {
+        RealmManager.write { realm in
             realm.delete(weathers)
         }
     }

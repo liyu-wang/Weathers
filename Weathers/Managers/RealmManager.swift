@@ -9,6 +9,8 @@
 import Foundation
 import RealmSwift
 
+typealias RealmWriteBlock = (_ realm: Realm) -> Void
+
 struct RealmManager {
     static let sharedInstance = RealmManager()
     
@@ -33,5 +35,28 @@ struct RealmManager {
     func configRealm() {
         // Tell Realm to use this new configuration object for the default Realm
         Realm.Configuration.defaultConfiguration = config
+    }
+}
+
+// https://stackoverflow.com/questions/35376584/why-does-realm-use-try-in-swift
+extension RealmManager {
+    public static var realm: Realm? {
+        do {
+            return try Realm()
+        } catch {
+            debugPrint("Could not access database: %@", error)
+            return nil
+        }
+    }
+    
+    public static func write(with realm: Realm? = RealmManager.realm, _ block: RealmWriteBlock) {
+        do {
+            try realm?.write {
+                // self.realm is not nil, so can `!`
+                block(realm!)
+            }
+        } catch {
+            debugPrint("Could not write to database: %@", error)
+        }
     }
 }
