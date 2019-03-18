@@ -1,5 +1,7 @@
 # Weathers
 
+This is a small sample demo app to demonstrate the ios MVVM architecture with RxSwift, Realm database.
+
 Installation guide.
 
 1. To run the app, you need to use the Cocoapods to install all the dependencies.
