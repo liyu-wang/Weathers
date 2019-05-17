@@ -6,10 +6,10 @@ target 'Weathers' do
   use_frameworks!
 
   # Pods for Weathers
-  pod 'RealmSwift', '~> 3.11'
+  pod 'RealmSwift', '~> 3.15'
   
-  pod 'RxSwift',    '~> 4.0'
-  pod 'RxCocoa',    '~> 4.0'
+  pod 'RxSwift',    '~> 5.0'
+  pod 'RxCocoa',    '~> 5.0'
   pod 'RxRealm'
   
   pod 'ActionSheetPicker-3.0', '~> 2.3.0'
@@ -17,9 +17,9 @@ target 'Weathers' do
   target 'WeathersTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'RealmSwift', '~> 3.11'
-    pod 'RxSwift',    '~> 4.0'
-    pod 'RxCocoa',    '~> 4.0'
+    pod 'RealmSwift', '~> 3.15'
+    pod 'RxSwift',    '~> 5.0'
+    pod 'RxCocoa',    '~> 5.0'
     pod 'RxRealm'
   end
 
